@@ -1,3 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:appwrite/appwrite.dart';
+import 'package:flappwrite_water_tracker/app/service/api_service.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatefulWidget {
@@ -55,10 +59,11 @@ class _SignupPageState extends State<SignupPage> {
             TextField(
               controller: _emailEC,
               decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  hintText: "email"),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                hintText: "email",
+              ),
             ),
             const SizedBox(height: 20.0),
             TextField(
@@ -74,7 +79,27 @@ class _SignupPageState extends State<SignupPage> {
             const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () async {
-                //register user
+                try {
+                  await ApiService.instance.signUp(
+                    email: _emailEC.text,
+                    password: _passwordEC.text,
+                    name: _nameEC.text,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Sign up successfully. Login to access your account',
+                      ),
+                    ),
+                  );
+                  Navigator.pop(context);
+                } on AppwriteException catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.message ?? 'Unknown error'),
+                    ),
+                  );
+                }
               },
               child: const Text("Signup"),
             ),

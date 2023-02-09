@@ -1,7 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flappwrite_water_tracker/app/model/water_intake.dart';
 import 'package:flappwrite_water_tracker/app/pages/history_page.dart';
+import 'package:flappwrite_water_tracker/app/pages/login_page.dart';
+import 'package:flappwrite_water_tracker/app/pages/splash_page.dart';
+import 'package:flappwrite_water_tracker/app/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -37,7 +42,13 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () async {
-              //Logout
+              await ApiService.instance.logout();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const MainPage(),
+                ),
+              );
             },
           ),
         ],
@@ -189,6 +200,28 @@ class WaterIntakeButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class MainPage extends StatelessWidget {
+  const MainPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: ApiService.instance.getUser(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SplashPage();
+        }
+
+        if (snapshot.hasData) {
+          return const HomePage();
+        }
+
+        return const LoginPage();
+      },
     );
   }
 }

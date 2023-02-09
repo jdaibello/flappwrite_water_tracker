@@ -1,4 +1,4 @@
-import 'package:flappwrite_water_tracker/app/pages/home_page.dart';
+import 'package:flappwrite_water_tracker/app/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomePage(),
+      home: const LoginPage(),
     );
   }
 }
